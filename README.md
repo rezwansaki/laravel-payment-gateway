@@ -1,39 +1,14 @@
-# Laravel-Docker-Alin-Version
+# Laravel-Payment-Gateway
 
-Laravel-Docker-Alin-Version is a pre-built and customizable Docker environment for Laravel. With this setup, you can quickly create and manage Laravel projects inside Docker without complex configurations.
-
-This project was originally customized by Masum, and later further adapted and refined by me to match my own development needs.
+Laravel-Payment-Gateway is a dockerized project for payment gateway with sslcommerz (sslcommerz.com). I create this project by using 'laravel-docker-alin-version' project. Very simple and basic guide. Just see the 'addToCart' function from DemoController.php file.
 
 ## Last Modifed Date
 
-04-May-2026 by Alin
+06-May-2026 by Alin
 
-## Before run the project
-
-at first install docker and docker-compose plugin then fix folder permission problem then start or restart the docker, install php with extension and check Dockerfile.
-
-## Check 'default.conf' file
-
-open the default.conf file: <br>
-'Laravel-Docker-Alin-Version/nginx/default.conf' <br>
-
-Change these information (if need): <br>
-server_name 192.168.1.177; <br>
-listen 80;
-
-## Run this command in the terminal for running project
+## Run The Project
 
 docker compose up -d
-
-## Run this command in the terminal for using laravel installer to create a laravel project
-
-docker compose run --rm project composer global require laravel/installer
-
-## Remove 'src' folder then run this command in the terminal to Create a Laravel project in 'src' folder
-
-laravel new src <br>
-or, <br>
-composer create-project laravel/laravel src
 
 ## Modify '.env' file from 'src' folder according to docker-compose.yml
 
