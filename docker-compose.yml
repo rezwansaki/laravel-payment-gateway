@@ -1,0 +1,57 @@
+services:
+  nginx:
+    image: nginx
+    ports:
+      - "8011:80"
+      - "443:443"
+    volumes:
+      - ./src:/var/www/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/certs:/etc/ssl/certs/
+    depends_on:
+      - project
+    networks:
+      - testx
+
+  project:
+    build: ./php/
+    working_dir: /var/www/html
+    user: "1000:1000"
+    volumes:
+      - ./src:/var/www/html
+      - ./php/ini/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+    environment:
+      - PHP_MEMORY_LIMIT=2048M
+      - upload_max_filesize=30M
+      - post_max_size=30M
+    networks:
+      - testx
+
+  mysql:
+    image: "mariadb:latest"
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "12345678"
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_DATABASE: "testdb"
+      MYSQL_USER: "alin"
+      MYSQL_PASSWORD: "12345678"
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    volumes:
+      - "./mysql:/var/lib/mysql"
+    networks:
+      - testx
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - testx
+
+networks:
+  testx:
+    driver: bridge
