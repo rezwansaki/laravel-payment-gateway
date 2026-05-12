@@ -1,10 +1,30 @@
 # Laravel-Payment-Gateway
 
-Laravel-Payment-Gateway is a dockerized project for payment gateway with sslcommerz (sslcommerz.com). I create this project by using 'laravel-docker-alin-version' project. Very simple and basic guide. Just see the 'addToCart' function from DemoController.php file.
+This is a simple Laravel dockerized project that demonstrates how to integrate and work with a payment gateway in a very basic and beginner-friendly way. It serves as a practical guide for understanding the full flow of a simple product ordering system. <br> <br>
+
+In this project, products are displayed, and users can add products to the cart successfully. All cart and order data are stored in the database. The implementation follows a straightforward approach for placing an order, making it easy to learn and follow. <br> <br>
+
+Each function is clearly commented to help developers understand the workflow step by step. This project is designed as a learning guide to simplify the process of working with payment gateways and basic e-commerce logic in Laravel.
+
+I create this project by using 'laravel-docker-alin-version' project. <br> <br>
+
+I use 'sslcommerz (sslcommerz.com)'.
+
+## These routes should be defined in the API routes file (`routes/api.php`):
+
+- `/success` → Handles successful payment callback
+- `/fail` → Handles failed payment callback
+- `/cancel` → Handles cancelled payment callback <br> <br>
+
+To create api route <br>
+
+```
+php artisan install:api
+```
 
 ## Last Modifed Date
 
-06-May-2026 by Alin
+12-May-2026 by Alin
 
 ## Run The Project
 

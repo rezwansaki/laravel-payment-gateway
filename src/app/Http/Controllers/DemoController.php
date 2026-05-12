@@ -9,100 +9,7 @@ use Illuminate\Support\Facades\Http;
 
 class DemoController extends Controller
 {
-    public function index()
-    {
-        return view('demo');
-    }
-
-    public function view(Request $request)
-    {
-        $url = 'https://sandbox.sslcommerz.com/gwprocess/v4/api.php';
-
-        $data = $request->all();
-
-        $response = Http::asForm()->withOptions(['verify' => false])->post($url, $data);
-
-        $incoming = $response->json();
-
-        if ($incoming['status'] == 'SUCCESS') {
-            return redirect()->away($incoming['GatewayPageURL']);
-        }
-
-        return $incoming;
-    }
-
-    public function success(Request $request)
-    {
-
-        $storeId = 'test_sslbddevwork001';
-        $storePwd = 'test_sslbddevwork001@ssl';
-        $valId = $request['val_id'];
-
-        $data = $request->all();
-
-        // return $data;
-
-        $validURL = "https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php?val_id=$valId&store_id=$storeId&store_passwd=$storePwd&format=json";
-
-        if ($data['status'] == 'VALID') {
-            $response = Http::get($validURL);
-            $returnData = $response->json();
-
-            if ($returnData['status'] == 'VALID') {
-                $trans_id = $request->tran_id;
-                $order = Order::find($trans_id);
-
-                $order->status = $request->status;
-                $order->error = $request->error;
-                $order->amount = $request->amount;
-                $order->bank_tran_id = $request->bank_tran_id;
-                $order->tran_date = $request->tran_date;
-                $order->card_issuer = $request->card_issuer;
-                $order->card_brand = $request->card_brand;
-                $order->val_id = $request->val_id;
-                $order->card_type = $request->card_type;
-
-                $order->save();
-            }
-        } else {
-            return 'You are a hacker!!';
-        }
-
-        return redirect()->route('orders');
-    }
-
-    public function fail(Request $request)
-    {
-        $trans_id = $request->tran_id;
-        $order = Order::find($trans_id);
-
-        $order->status = $request->status;
-        $order->error = $request->error;
-        $order->amount = $request->amount;
-        $order->bank_tran_id = $request->bank_tran_id;
-        $order->tran_date = $request->tran_date;
-        $order->card_issuer = $request->card_issuer;
-        $order->card_brand = $request->card_brand;
-
-        $order->save();
-
-        return redirect()->route('orders');
-    }
-
-    public function cancel(Request $request)
-    {
-        $trans_id = $request->tran_id;
-        $order = Order::find($trans_id);
-
-        $order->status = $request->status;
-        $order->error = $request->error;
-        $order->amount = $request->amount;
-
-        $order->save();
-
-        return redirect()->route('orders');
-    }
-
+    // show all products 
     public function products()
     {
         $products = Product::all();
@@ -110,8 +17,10 @@ class DemoController extends Controller
         return view('products', compact('products'));
     }
 
+    // add a product to the cart (add to cart function)
     public function addToCart(Request $request)
     {
+        // get the user selected product 
         $productId = $request->product_id;
         $product = Product::find($productId);
 
@@ -174,6 +83,85 @@ class DemoController extends Controller
         }
     }
 
+    // Handle successful payment callback
+    public function success(Request $request)
+    {
+        // required credential 
+        $storeId = 'test_sslbddevwork001';
+        $storePwd = 'test_sslbddevwork001@ssl';
+        $valId = $request['val_id'];
+
+        // receive all callback data from payment gateway 
+        $data = $request->all();
+
+        // valid URL 
+        $validURL = "https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php?val_id=$valId&store_id=$storeId&store_passwd=$storePwd&format=json";
+
+        // check status 'valid' or not 
+        if ($data['status'] == 'VALID') {
+            // Send GET request to the URL 
+            $response = Http::get($validURL);
+            // Convert response data to JSON
+            $returnData = $response->json();
+
+            if ($returnData['status'] == 'VALID') {
+                $trans_id = $request->tran_id;
+                $order = Order::find($trans_id);
+
+                $order->status = $request->status;
+                $order->error = $request->error;
+                $order->amount = $request->amount;
+                $order->bank_tran_id = $request->bank_tran_id;
+                $order->tran_date = $request->tran_date;
+                $order->card_issuer = $request->card_issuer;
+                $order->card_brand = $request->card_brand;
+                $order->val_id = $request->val_id;
+                $order->card_type = $request->card_type;
+
+                $order->save();
+            }
+        } else {
+            return 'You are a hacker!!';
+        }
+
+        return redirect()->route('orders');
+    }
+
+    // Handle failed payment callback 
+    public function fail(Request $request)
+    {
+        $trans_id = $request->tran_id;
+        $order = Order::find($trans_id);
+
+        $order->status = $request->status;
+        $order->error = $request->error;
+        $order->amount = $request->amount;
+        $order->bank_tran_id = $request->bank_tran_id;
+        $order->tran_date = $request->tran_date;
+        $order->card_issuer = $request->card_issuer;
+        $order->card_brand = $request->card_brand;
+
+        $order->save();
+
+        return redirect()->route('orders');
+    }
+
+    // Handle cancelled payment callback 
+    public function cancel(Request $request)
+    {
+        $trans_id = $request->tran_id;
+        $order = Order::find($trans_id);
+
+        $order->status = $request->status;
+        $order->error = $request->error;
+        $order->amount = $request->amount;
+
+        $order->save();
+
+        return redirect()->route('orders');
+    }
+
+    // show all orders 
     public function orders()
     {
         $orders = Order::orderby('id', 'desc')->get();

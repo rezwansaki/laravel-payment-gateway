@@ -12,7 +12,7 @@
   <div class="overflow-x-auto sm:mx-0.5 lg:mx-0.5">
     <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
       <div class="overflow-hidden">
-        <a class="text-black dark:text-whhite" href="{{ url('/products') }}">Products</a>
+        <a class="text-black dark:text-whhite" href="{{ url('/') }}">Products</a>
         <table class="min-w-full">
           <thead class="bg-white border-b">
             <tr>
